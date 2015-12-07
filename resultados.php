@@ -31,12 +31,11 @@ $simbolosFim = $_POST['data']['simbolo_fim'];
                         data: 'data[sentenca]=' + sentenca + '&data[DadosValorTerminalEstado]=' + DadosValorTerminalEstado
                         + '&data[SimbolosFinais]=' + SimbolosFinais + '&data[SimboloInicial]=' + SimboloInicial,
                         type: 'POST',
-                        //async: false,
                         success: function(retorno) {
                             $('#RespostaSentenca').html(retorno.msg);
                         },
                         error: function() {
-                            alert('Erro ao tentar fazer o teste da sentença!');
+                            alert('Houve algum erro ao tentar fazer o teste da sentença!');
                         }
                     });
 
