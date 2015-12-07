@@ -36,5 +36,38 @@ class Funcoes {
 
         return true;
     }
+    
+    public static function temMaisDeUmEstadoDestino($estado) {
+        $estadosDestino = explode(',', $estado);
+        if(count($estadosDestino) > 1) {
+            return true;
+        }
+        
+        return false;
+    }
+    
+    public static function getEstadoDestino($estadosDestino, $atualTerminalDaSentenca, $proximoTerminalDaSentenca, $estadoAtual) {
+        /*var_dump($estadosDestino);
+        var_dump($atualTerminalDaSentenca);
+        var_dump($proximoTerminalDaSentenca);
+        var_dump($estadoAtual);*/
+        $estadosDestinoArray = explode(',', $estadosDestino);
+        //var_dump($estadosDestinoArray);
+        if($atualTerminalDaSentenca == $proximoTerminalDaSentenca) {
+            foreach ($estadosDestinoArray as $estado) {
+                if($estado == $estadoAtual) {
+                    return $estado;
+                }
+            }
+        }
+        
+        foreach ($estadosDestinoArray as $estado) {
+                if($estado != $estadoAtual) {
+                    return $estado;
+                }
+            }
+        
+        //exit;
+    }
 
 }
