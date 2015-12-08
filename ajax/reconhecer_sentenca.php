@@ -1,44 +1,46 @@
 <?php
 
-require_once('funcoes.php');
+require_once('../funcoes.php');
 
 $sentenca = $_POST['data']['sentenca'];
 $DadosValorTerminalEstado = json_decode($_POST['data']['DadosValorTerminalEstado']);
 $SimbolosFinais = json_decode($_POST['data']['SimbolosFinais']);
 $SimboloInicial = $_POST['data']['SimboloInicial'];
-//var_dump($DadosValorTerminalEstado);exit;
 $indexUltimaLetra = strlen($sentenca) - 1;
 
-$estadoAtual = $SimboloInicial;
+$estadoAtual = $passosAutomato = $SimboloInicial;
 $retorno['msg'] = 'Sentença não Reconhecida!';
 for ($i = 0; $i < strlen($sentenca); $i++) {
-    $letra = $sentenca[$i];
-    //var_dump($DadosValorTerminalEstado->$letra->$estadoAtual); exit;   
-    if(Funcoes::temMaisDeUmEstadoDestino($DadosValorTerminalEstado->$letra->$estadoAtual)) {
+    $letra = $sentenca[$i];    
+    if (is_object($DadosValorTerminalEstado)) {
+        $estadosDestinos = $DadosValorTerminalEstado->$letra->$estadoAtual;
+    } else {
+        $estadosDestinos = $DadosValorTerminalEstado[$letra]->$estadoAtual;
+    }
+    
+    if(Funcoes::temMaisDeUmEstadoDestino($estadosDestinos)) {
         $proximaLetra = '';
         $nextIndex = $i + 1;
         if(isset($sentenca[$nextIndex])) {
             $proximaLetra = $sentenca[$nextIndex];
         }
         
-        //var_dump($proximaLetra);
-        //var_dump($sentenca[$nextIndex]);        
-        $estadoDestino = Funcoes::getEstadoDestino($DadosValorTerminalEstado->$letra->$estadoAtual, $letra, $proximaLetra, $estadoAtual);
+        $estadoDestino = Funcoes::getEstadoDestino($estadosDestinos, $letra, $proximaLetra, $estadoAtual);
     } else {
-        $estadoDestino = $DadosValorTerminalEstado->$letra->$estadoAtual;
+        $estadoDestino = $estadosDestinos;
     }
     
-    
-    //var_dump('estadoAtual: ' . $estadoAtual);
-    //var_dump('estadoDestino: ' . $estadoDestino);
     if (empty($estadoDestino)) {
+        $retorno['passosAutomato'] = $passosAutomato . '->(Não foi achado estado destino)';
         echo json_encode($retorno);
         exit();
     }
 
+    $passosAutomato .= '->' . $estadoDestino;
     $estadoAtual = $estadoDestino;
     if ($i == $indexUltimaLetra) {
         if (!Funcoes::estadoIsFinal($estadoAtual, $SimbolosFinais)) {
+            $retorno['passosAutomato'] = $passosAutomato . '(Não é estado final)';
             echo json_encode($retorno);
             exit();
         }
@@ -46,5 +48,6 @@ for ($i = 0; $i < strlen($sentenca); $i++) {
 }
 
 $retorno['msg'] = 'Sentença Reconhecida!';
+$retorno['passosAutomato'] = $passosAutomato;
 echo json_encode($retorno);
 exit();

@@ -26,20 +26,18 @@ $simbolosFim = $_POST['data']['simbolo_fim'];
                     var SimbolosFinais = $('#SimbolosFinais').val();
                     var SimboloInicial = $('#SimboloInicial').val();
                     $.ajax({
-                        url: 'reconhecer_sentenca.php',
+                        url: 'ajax/reconhecer_sentenca.php',
                         dataType: 'json',
                         data: 'data[sentenca]=' + sentenca + '&data[DadosValorTerminalEstado]=' + DadosValorTerminalEstado
-                        + '&data[SimbolosFinais]=' + SimbolosFinais + '&data[SimboloInicial]=' + SimboloInicial,
+                                + '&data[SimbolosFinais]=' + SimbolosFinais + '&data[SimboloInicial]=' + SimboloInicial,
                         type: 'POST',
                         success: function(retorno) {
-                            $('#RespostaSentenca').html(retorno.msg);
+                            $('#RespostaSentenca').html(retorno.msg + '<br />' + retorno.passosAutomato);
                         },
                         error: function() {
                             alert('Houve algum erro ao tentar fazer o teste da sentença!');
                         }
                     });
-
-
                 })
 
             });
@@ -47,11 +45,11 @@ $simbolosFim = $_POST['data']['simbolo_fim'];
     </head>
     <body>
         <h1>Resultados</h1>
-        
+
         <input id="DadosValorTerminalEstado" type="hidden" value='<?= json_encode($dadosValorTerminalEstado); ?>' />
         <input id="SimbolosFinais" type="hidden" value='<?= json_encode($simbolosFim); ?>' />
         <input id="SimboloInicial" type="hidden" value='<?= $simboloInicio; ?>' />
-        
+
         <h3>Tabela de Transições:</h3>
         <p>*: Estado Inicial <br />
             ->: Estado Final</p>
@@ -83,16 +81,12 @@ $simbolosFim = $_POST['data']['simbolo_fim'];
         <p>
             <?php echo Funcoes::automatoIsDeterministico($dadosValorTerminalEstado) ? 'Autômato Determinístico' : 'Autômato Não-Determinístico' ?>
         </p>
-        
+
         <br />
-        
+
         <h3>Teste de Sentenças:</h3>
         <input type="text" placeholder="Digite a sentença" id="sentenca" />
         <button id="ButtonTesteSentenca" type="button">Testar Sentença!</button>
         <p id="RespostaSentenca"></p>
     </body>
 </html>
-
-
-
-
