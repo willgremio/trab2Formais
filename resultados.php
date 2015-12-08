@@ -51,8 +51,18 @@ $simbolosFim = $_POST['data']['simbolo_fim'];
         <input id="SimboloInicial" type="hidden" value='<?= $simboloInicio; ?>' />
 
         <h3>Tabela de Transições:</h3>
-        <p>*: Estado Inicial <br />
-            ->: Estado Final</p>
+        <table>
+            <tr>
+                <td>*</td>
+                <td>Estado Inicial</td> 
+            </tr>
+            <tr>
+                <td>-></td>
+                <td>Estado Final</td> 
+            </tr>
+        </table>
+        <br />
+
         <table border="1" cellspacing="1px">
             <tr>
                 <th></th>
